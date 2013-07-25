@@ -1,0 +1,34 @@
+<!--new_driver.html-->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class = "content" style='text-align: center'>
+
+	<h4>Drivers</h4>
+
+	<table class = "table-layout">
+{% for driver in drivers%}
+<tr><td>{{driver}}</td></tr>
+	{%endfor%}
+	</table>
+	<hr ></hr>
+<p><h4>New Driver</h4></p>
+	<form action="" method="POST"> 
+				{% csrf_token %}
+				<div>
+					<div id="inp1">
+						<table class = "table-layout">
+							{{form.as_table}}
+						
+						</table>
+					</div>
+					
+				</div>
+				<input type="submit" value="Submit" /> 
+				
+			</form>
+			
+</div>
+
+{% endblock %}

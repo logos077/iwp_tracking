@@ -1,0 +1,25 @@
+<!--new_project.html-->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='content' > 
+	
+	<form action="" method="POST"> 
+				{% csrf_token %}
+				<div>
+					<div id="inp1">
+						<table style ="left">
+							{{form.as_table}}
+						
+						</table>
+					</div>
+					
+				</div>
+				<input type="submit" value="Submit" /> 
+				
+			</form>
+
+</div>
+
+{% endblock %}

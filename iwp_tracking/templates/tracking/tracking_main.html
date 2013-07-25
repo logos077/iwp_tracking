@@ -1,0 +1,107 @@
+<!--tracking_main.html-->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class='content' > 
+
+<div class='toolbar_top' >
+<table align = "center"><tr><td>
+	<form  method="POST"> 
+	    
+        {% csrf_token %}
+
+<label  for="id_job_user">Filter By:</label><select name="job_filter" id="job_filter"> 
+<option value= 'ShipDateJob'>Ship Date - Job Number</option>
+<option value= 'Future'>Future</option>
+<option value= 'Shipped'>Shipped</option>
+<option value= 'All'>All</option>
+
+</select>
+
+
+       <input type="submit" value="Filter" /> </form>
+
+
+</td><td>
+
+<form action="/tracking/search/" method="get">         
+	<label for="id_q">Filter by Job Number:</label>
+	           <input id="id_q" name="q" type="text">
+	           <input type="submit" value="Submit"></br>
+</form>
+</td><td>{{message}}</td>
+</tr>
+</table>
+</div>
+
+
+	<table align ="center" width = "auto" >
+
+		<tr class = "table_header">
+				<th>Shpd</th>
+				<th>Ship Date</th>
+				<th>Job #</th>
+				<th>WO</th>
+				
+				<th>Description</th>
+				
+				
+				
+				<th>Batch</th>
+				<th>Driver</th>
+				<th>Notes</th>
+				<th>F</th>
+				<th>Boxes</th>
+				<th>Re-Shop</th>
+				<th>Eng</th>
+				<th>Installer</th>
+				<th>City</th>
+				<th>Edit</th>
+
+				
+			</tr>
+		{% regroup this_list by ShipDate as shipplist %}
+		{% for ShipDate in shipplist %}
+		
+		<tr><td></br></td></tr>
+		{% for item in ShipDate.list%}
+		<span><tr class = {{item.TxtColor}} bgcolor = {{item.BkgrdColor}}>
+			{%if item.shipbool == "True" %}
+				<td><input type = "checkbox" checked></td>
+			{%else %}
+				<td><input type = "checkbox" unchecked></td>
+			{%endif%}
+			<td>{{item.ShipDate}}</td>
+			
+			<td>{{item.ProjectNumber.Number}}</td>
+			<td>{{item.Number}}</td>
+			<td>{{item.Description}}</td>
+			<td>{{item.Batch}}</td>
+			<td>{{item.Driver}}</td>
+			<td>{{item.Notes}}</td>
+			
+			
+			
+				{%if item.futurebool == "True" %}
+			<td><input type = "checkbox" checked></td>
+			{%else %}
+			<td><input type = "checkbox" unchecked></td>
+			{%endif%}
+			
+			<td>{{item.BoxCount}}</td>
+			<td>{{item.ReleaseToShop}}</td>
+			<td>{{item.Engineer}}</td>
+			<td >{{item.ProjectNumber.Installer}}</td>
+			<td >{{item.ProjectNumber.City}}</td>
+			<td><a href='{% url tracking.views.edit_work_order item.Number %}'class="button_blue" ></td>
+		
+		
+		</tr></span>
+		{% endfor%}
+		{% endfor%}
+	</table>
+
+</div>
+
+{% endblock %}

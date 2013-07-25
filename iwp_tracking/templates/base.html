@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+    {% comment %}
+       This is the main template for all our portal pages (base.html)
+	{% endcomment %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+			<link rel="stylesheet" type="text/css" href="/static/CSS/base.css" />
+        {% block head %}{% endblock %}
+	<title>Interior Wood Products | {% block title %}{% endblock %}</title>
+
+    </head>
+    <body>
+    <div class='backboard'>
+    	<section>	
+			<header>
+				<img src="/static/images/IWP.png" align=top>
+				<h1>Interior Wood Products | User Portal</h1>
+			</header>
+
+			<div class="menu">
+				<a class="menu_item" href="/main/">Home</a>
+				<a class="menu_item" href ="/tracking/">Tracking</a>
+				<a class="menu_item" href="/tracking/projects/">New Project</a>
+				<a class="menu_item" href="/tracking/new_work_order/">New Work Order</a>
+				<a class="menu_item" href="/tracking/new_installer/">New Installer</a>
+				<a class="menu_item" href="/tracking/new_driver/">New Driver</a>
+				<a class="menu_item" href="/tracking/new_contractor/">New Contractor</a>
+		      	
+				{%comment%}
+					The following code checks for group membership and displays the proper link
+				{%endcomment%}
+
+				{% for group in user.groups.all %}
+					{% if group.name == 'ProjectAdmin'%}
+				<a class="menu_item" href="/project_admin/project_admin_main/">Admin</a>
+					{% endif %}
+				{% endfor %}
+
+
+				{% for group in user.groups.all %}
+					{% if group.name == 'ProjectAdvisor'%}
+				<a class="menu_item" href="/project_admin/project_admin_main/">Project Advisor</a>
+					{% endif %}
+				{% endfor %}
+				
+				
+				{% block menu %}{% endblock %}
+				<a class="menu_item" id='logout' href="/logout/">Log Out</a>
+			</div>
+		</section>
+		<div class="header">
+		{% block header %}{% endblock %}
+		</div>
+		{% block body %}{% endblock %}
+		{% block content %}{% endblock %}
+	    <footer >
+			<span>&copy; {% now "Y"%} Interior Wood Products LLC</span>
+		</footer>
+    </div>
+</body>
+</html>
