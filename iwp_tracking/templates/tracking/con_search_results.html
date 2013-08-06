@@ -1,0 +1,26 @@
+<!--con_search_results.html-->
+{% extends "base.html" %}
+
+{% block body %}
+<div class="header">Edit Contractor</div>
+<div class='content' style='text-align:center'>
+{% if search_exists %}
+<div class='toolbar_top'>
+Results for: "{{ query_string }}" 
+</div>
+
+	<table align = 'center'>
+	{% for contractor in found_entries %}
+		<tr style="list-style: none" id ="{{ contractor.id }}">
+			<td><a href ='{% url tracking.views.edit_con contractor.id %}'>{{contractor.Name}}</a>
+            </td>
+		</tr>
+	{% endfor %}
+	
+</table>
+{% else %}
+Your Search for: "{{ query_string }}"did not return any results  </br>
+</div>
+
+{%endif%}
+{% endblock %}
