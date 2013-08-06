@@ -23,4 +23,4 @@ class NewInstallerForm(ModelForm):
 
 class NewContractorForm(ModelForm):
     class Meta:
-        model = Installer
+        model = Contractor

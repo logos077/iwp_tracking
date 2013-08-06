@@ -5,11 +5,10 @@ from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
 
 def index(request):
-	return HttpResponse("index")
-	return render_to_response('base.html')
+	
+	return render_to_response('index.html')
 
 def main_page(request):
-	#return HttpResponse("main_page")
 	return render_to_response('main/home.html')
 
 def logout_page(request):

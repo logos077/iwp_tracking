@@ -49,12 +49,12 @@ FONT_COLORS = (
     (_Black, 'Black'),
     )
 class Project(models.Model):
-	Number = models.IntegerField(max_length = 10, primary_key = True)
+	Number = models.IntegerField(max_length = 10, unique = True)
 	Name = models.CharField(max_length = 100)
 	Contractor = models.ForeignKey('Contractor')
 	Installer = models.ForeignKey('Installer')
 	City = models.CharField(max_length = 100)
-	State = USStateField(blank=True, null=True)
+	State = USStateField(blank=True, null=True, default = "WA")
 
 
 	def __unicode__(self):
@@ -62,7 +62,7 @@ class Project(models.Model):
 		return unicode(Display)
 
 class Contractor(models.Model):
-	Name = models.CharField(max_length = 100)
+	Name = models.CharField(max_length = 100, unique = True)
 	Abr = models.CharField(max_length = 10)
 	
 
@@ -71,7 +71,7 @@ class Contractor(models.Model):
 		return unicode(self.Abr)
 
 class Installer(models.Model):
-	Name = models.CharField(max_length = 100)
+	Name = models.CharField(max_length = 100, unique = True)
 	
 
 	def __unicode__(self):
@@ -79,7 +79,7 @@ class Installer(models.Model):
 		return unicode(self.Name)
 
 class WorkOrder(models.Model):
-	Number 			= 		 models.IntegerField(max_length = 10, primary_key = True)
+	Number 			= 		 models.IntegerField(max_length = 10, unique = True)
 	ProjectNumber	= 		 models.ForeignKey('Project')
 	Description		=		 models.CharField(max_length = 100)
 	Engineer 		=		 models.ForeignKey('Engineer')
@@ -115,7 +115,7 @@ class Engineer(models.Model):
 		return unicode(self.Initials)
 
 class Driver(models.Model):
-	Name = models.CharField(max_length = 20)
+	Name = models.CharField(max_length = 20, unique = True)
 	def __unicode__(self):
 		#Display = self.JobNumber+" - "+self.JobName 
 		return unicode(self.Name)

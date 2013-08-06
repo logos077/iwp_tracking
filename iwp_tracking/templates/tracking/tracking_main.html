@@ -1,6 +1,8 @@
 <!--tracking_main.html-->
 {% extends "base.html" %}
-
+{% block header%}
+Shipping Schedule
+{% endblock %}
 {% block content %}
 
 <div class='content' > 
@@ -23,10 +25,10 @@
        <input type="submit" value="Filter" /> </form>
 
 
-</td><td>
+</td><td><div class = 'verticalLine'> </br></div></td><td>
 
 <form action="/tracking/search/" method="get">         
-	<label for="id_q">Filter by Job Number:</label>
+	<label for="id_q">Show all Work Orders for Job Number:</label>
 	           <input id="id_q" name="q" type="text">
 	           <input type="submit" value="Submit"></br>
 </form>
@@ -61,10 +63,11 @@
 
 				
 			</tr>
-		{% regroup this_list by ShipDate as shipplist %}
+		{% regroup this_list by ShipDate|date:"l" as shipplist %}
+		
 		{% for ShipDate in shipplist %}
 		
-		<tr><td></br></td></tr>
+		<tr><td></td><td class = "bold_text">{{ ShipDate.grouper}}</td></tr>
 		{% for item in ShipDate.list%}
 		<span><tr class = {{item.TxtColor}} bgcolor = {{item.BkgrdColor}}>
 			{%if item.shipbool == "True" %}
@@ -94,7 +97,7 @@
 			<td>{{item.Engineer}}</td>
 			<td >{{item.ProjectNumber.Installer}}</td>
 			<td >{{item.ProjectNumber.City}}</td>
-			<td><a href='{% url tracking.views.edit_work_order item.Number %}'class="button_blue" ></td>
+			<td><a href='{% url tracking.views.edit_work_order item.id %}'class="button_blue" ></td>
 		
 		
 		</tr></span>

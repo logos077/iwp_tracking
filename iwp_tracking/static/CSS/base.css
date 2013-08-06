@@ -415,6 +415,10 @@ body{
 	padding:10px;
 
 } 
+.verticalLine{
+
+	border-left:thin solid #000000;
+}
 /*
 .red{
 	color:#CD5555;
@@ -453,3 +457,7 @@ body{
 .black{
 	color:#000000;
 }   
+
+.bold_text{
+	font:italic bold 16px/25px Georgia,serif;
+}

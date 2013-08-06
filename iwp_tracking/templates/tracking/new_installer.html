@@ -1,19 +1,27 @@
 <!--new_installer.html-->
 {% extends "base.html" %}
-
+{% block header%}
+{{title}}
+{% endblock %}
 {% block content %}
 
 <div class = "content" style='text-align: center'>
 
-	<h4>Installers</h4>
-
-	<table class = "table-layout">
+	{% if installers %}
+<table class = "table-layout">
+<th>Click to Edit:</th>
 {% for installer in installers%}
-<tr><td>{{installer}}</td></tr>
-	{%endfor%}
-	</table>
+
+		<tr style="list-style: none" id ="{{ installer.id }}">
+			<td><a href ='{% url tracking.views.edit_installer installer.id %}'>{{installer}}</a>
+            </td>
+		</tr>
+	{% endfor %}
+
+</table>
+{%endif%}
 	<hr ></hr>
-<p><h4>New Installer</h4></p>
+<p><h4>{{context_message}}</h4></p>
 	<form action="" method="POST"> 
 				{% csrf_token %}
 				<div>

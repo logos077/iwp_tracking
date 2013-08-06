@@ -1,19 +1,26 @@
 <!--new_driver.html-->
 {% extends "base.html" %}
-
+{% block header%}
+{{title}}
+{% endblock %}
 {% block content %}
 
 <div class = "content" style='text-align: center'>
 
-	<h4>Drivers</h4>
-
-	<table class = "table-layout">
+{% if drivers %}
+<table class = "table-layout">
+<th>Click to Edit</th>
 {% for driver in drivers%}
-<tr><td>{{driver}}</td></tr>
-	{%endfor%}
-	</table>
+		<tr style="list-style: none" id ="{{ driver.id }}">
+			<td><a href ='{% url tracking.views.edit_driver driver.id %}'>{{driver}}</a>
+            </td>
+		</tr>
+	{% endfor %}
+
+</table>
+{%endif%}
 	<hr ></hr>
-<p><h4>New Driver</h4></p>
+<h4> {{context_message}}</h4>
 	<form action="" method="POST"> 
 				{% csrf_token %}
 				<div>

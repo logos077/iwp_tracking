@@ -1,19 +1,30 @@
 <!--new_contractor.html-->
 {% extends "base.html" %}
-
+{% block header%}
+{{message}}
+{% endblock %}
 {% block content %}
+<div class='content' style='text-align:center;'>
+<form class='toolbar_top' action="/tracking/new_contractor/" method="get">         
+	<label for="id_q">Search by Contractor Name to Edit:</label>
+	           <input id="id_q" name="q" type="text">
+	           <input type="submit" value="Submit"></br>
+</form>
 
-<div class = "content" style='text-align: center'>
-
+{%  comment%}
 	<h4>Contractors</h4>
 
 	<table class = "table-layout">
 {% for contractor in contractors%}
+
 <tr><td>{{contractor}}</td></tr>
+
 	{%endfor%}
 	</table>
 	<hr ></hr>
-<p><h4>New Contractor</h4></p>
+
+	{% endcomment%}
+<p><h4>{{message}}</h4></p>
 	
 	<form action="" method="POST"> 
 				{% csrf_token %}

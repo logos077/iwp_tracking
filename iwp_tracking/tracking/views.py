@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response, render
 from django.core.context_processors import csrf
@@ -11,6 +12,7 @@ from django.template import RequestContext
 from tracking.models import *
 from tracking.forms import *
 
+@login_required
 def tracking(request):
 	
 	this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
@@ -36,14 +38,11 @@ def tracking(request):
 			this_list = WorkOrder.objects.all().order_by("ShipDate", "ProjectNumber")
 			context = {'this_list':this_list}
 			response = render_to_response(template_name,context,RequestContext(request))
-
-
-
-		#return HttpResponse(job_filter)
-	
 	
 	return response
 
+
+@login_required
 def search(request):
 	query_string = ''
 	found_entries = None
@@ -56,29 +55,34 @@ def search(request):
 	if ('q' in request.GET) and request.GET['q'].strip():
 		
 		query_string = request.GET['q']
-		job_number = int(query_string)
+		try:
+			job_number = int(query_string)
+
+		except ValueError:
+			job_number = 0
+
 		found_entries = Project.objects.filter(Number = job_number)
+		
   		
 		if found_entries.exists():
 			this_list = WorkOrder.objects.filter(ProjectNumber = job_number).order_by("ShipDate", "ProjectNumber")
 			context = {'this_list':this_list}
 			template_name = "tracking/tracking_main.html"
 			response = render_to_response(template_name,context,RequestContext(request))
+		
 		else:
-			#this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
-			#context = {'this_list':this_list}
-			#template_name = "tracking/tracking_main.html"
 			message = "JOB NOT FOUND!"
 			context = {'this_list':this_list, "message":message}
 			response = render_to_response(template_name,context,RequestContext(request))
 
-	return response 
+	return response
+@login_required 
 def new_project(request):
 	
 	form = NewProjectForm
 	context = {'form':form}
 	template_name = "tracking/new_project.html"
-	success_template = "/main/"
+	success_template = "tracking/success.html"
 	response = render_to_response(template_name,context,RequestContext(request))
 	if request.method == "POST":
 		form = NewProjectForm(request.POST)
@@ -93,14 +97,15 @@ def new_project(request):
 
 	
 	return response
-
+@login_required
 def new_work_order(request):
-	
-
-	form = NewWOForm
+	pk = request.user.id
+	en = Engineer.objects.get(user=pk)
+	form = NewWOForm()
+	form.initial['Engineer'] = en
 	context = {'form':form}
 	template_name = "tracking/new_work_order.html"
-	success_template = "/main/"
+	success_template = "tracking/success.html"
 	response = render_to_response(template_name,context,RequestContext(request))
 	if request.method == 'POST':
 		form = NewWOForm(request.POST)
@@ -112,19 +117,20 @@ def new_work_order(request):
 			template_name = "tracking/tracking_main.html"
 			response = render_to_response(template_name,context,RequestContext(request))
 		else:
-			#return HttpResponse("not Valid")
+			
 			context = {'form':form}
 			response = render_to_response(template_name,context,RequestContext(request))
 	
 	return response
-
+@login_required
 def edit_work_order(request, pk):
-	wo_number = int(pk)
-	wo = WorkOrder.objects.get(Number = wo_number)
+	wo_id = int(pk)
+	#wo_number = int(pk)
+	wo = WorkOrder.objects.get(pk = wo_id)
 	form = NewWOForm()
 	
 	template_name = "tracking/new_work_order.html"
-	success_template = "/main"
+	success_template = "tracking/success.html"
 	
 	form.initial['Number'] = wo.Number
 	form.initial['ProjectNumber'] = wo.ProjectNumber
@@ -147,7 +153,7 @@ def edit_work_order(request, pk):
 		if form.is_valid():
 			success_template = "tracking/tracking_main.html"
 			wof =form.save(False)
-			
+			wof.id = wo.id
 			wof.Number = wo.Number
 			wof.ProjectNumber = wo.ProjectNumber
 			wof.Description= wo.Description
@@ -169,57 +175,70 @@ def edit_work_order(request, pk):
 			template_name = "tracking/tracking_main.html"
 			response = render_to_response(template_name,context,RequestContext(request))
 		else:
-			#return HttpResponse("not Valid")
+			
 			context = {'form':form}
 			response = render_to_response(template_name,context,RequestContext(request))
 	
 	return response
+
+
+@login_required
 def new_driver(request):
 	form = NewDriverForm
 	drivers = Driver.objects.all()
-	context = {'form':form, 'drivers':drivers}
+	title = "New Driver"
+	context_message = "Enter New Driver"
+	context = {'form':form, 'drivers':drivers, 'title':title,'context_message':context_message}
 	template_name = "tracking/new_driver.html"
-	success_template = "/main/"
+	success_template = "tracking/success.html"
 	response = render_to_response(template_name,context,RequestContext(request))
 	if request.method == 'POST':
 		form = NewDriverForm(request.POST)
 		if form.is_valid():
 			form.save()
-			response = render_to_response(template_name,RequestContext(request))
+			response = render_to_response(success_template,RequestContext(request))
 		else:
-			#return HttpResponse("not Valid")
-			context = {'form':form, 'drivers':drivers}
+			
+			context = {'form':form, 'drivers':drivers, 'title':title,'context_message':context_message}
 			response = render_to_response(template_name,context,RequestContext(request))
 	
 	return response
 
-
+@login_required
 def new_installer(request):
 	form = NewInstallerForm
 	installers = Installer.objects.all()
-	context = {'form':form, 'installers':installers}
+	
 	template_name = "tracking/new_installer.html"
-	success_template = "/main/"
+	success_template = "tracking/success.html"
+	title = "New Installer"
+	context_message = "Enter New Installer:"
+	context = {'form':form, 'installers':installers, 'title':title,'context_message':context_message}
 	response = render_to_response(template_name,context,RequestContext(request))
 	if request.method == 'POST':
 		form = NewInstallerForm(request.POST)
 		if form.is_valid():
 			form.save()
-			response = render_to_response(template_name,RequestContext(request))
+			template_name = success_template
+			response = render_to_response(template_name, context,RequestContext(request))
 		else:
-			#return HttpResponse("not Valid")
-			context = {'form':form, 'installers':installers}
+			
+			context = {'form':form, 'installers':installers,'title':title,'context_message':context_message}
 			response = render_to_response(template_name,context,RequestContext(request))
 	
 	return response
 
-def new_contractor(request):
-	form = NewContractorForm
-	contractors = Contractor.objects.all()
-	context = {'form':form, 'contractors':contractors}
 
+@login_required
+def new_contractor(request):
+	form = NewContractorForm()
+	contractors = Contractor.objects.all()
+	count = Contractor.objects.all().count()
+	
+	message = "New Contractor"
 	template_name = "tracking/new_contractor.html"
 	success_template = "tracking/new_contractor.html"
+	context = {'form':form, 'contractors':contractors, 'count':count, 'message':message}
 	response = render_to_response(template_name,context,RequestContext(request))
 	if request.method == 'POST':
 		form = NewContractorForm(request.POST)
@@ -227,12 +246,139 @@ def new_contractor(request):
 			form.save()
 			response = render_to_response(template_name,RequestContext(request))
 		else:
-			#return HttpResponse("not Valid")
-			context = {'form':form, 'contractors':contractors}
+			
+			context = {'form':form, 'contractors':contractors, 'count':count, 'message':message}
 			response = render_to_response(template_name,context,RequestContext(request))
-	
+	elif request.method == 'GET':
+		
+		query_string = ''
+		found_entries = None
+		if ('q' in request.GET) and request.GET['q'].strip():
+			query_string = request.GET['q']
+			found_entries = Contractor.objects.filter(Name__icontains = query_string).order_by('Name')
+			
+			search_exists = found_entries.exists()
+
+			response =  render_to_response('tracking/con_search_results.html',
+			{ 'query_string': query_string, 'found_entries': found_entries, 'search_exists': search_exists },
+			context_instance=RequestContext(request))
+
+
+
+
+
+
 	return response
 
-def main_page(request):
-	#return HttpResponse("main_page")
-	return render_to_response('main/home.html')
+@login_required	
+def edit_con(request, pk):
+	string = pk
+	con_id = int(pk)
+	form = NewContractorForm()
+	contractors = Contractor.objects.all()
+	count = Contractor.objects.all().count()
+	title = "Edit Contractor"
+	context_message =  "Enter New Driver to add:"
+
+	
+	
+	this_Contractor = Contractor.objects.get(pk =con_id)
+	form.initial['Name'] = this_Contractor.Name
+	form.initial['Abr'] = this_Contractor.Abr
+	
+
+	template_name = "tracking/new_contractor.html"
+	context = {'form':form, 'contractors':contractors, 'count':count, 'title':title,'context_message':context_message}
+	response = render_to_response(template_name,context,RequestContext(request))
+	if request.method == 'POST':
+		form = NewContractorForm(request.POST, instance = this_Contractor)
+		
+		
+		response = render_to_response(template_name,context,RequestContext(request))
+		if form.is_valid():
+			success_template = "tracking/tracking_main.html"
+			ecf= form.save(False)
+			ecf.id = con_id
+			ecf.Name = this_Contractor.Name
+			ecf.Abr = this_Contractor.Abr
+			ecf.save()
+			response = render_to_response(template_name,RequestContext(request))
+		else:
+			#return HttpResponse("not Valid")
+			context = {'form':form, 'contractors':contractors, 'count':count, 'title':title,'context_message':context_message}
+			response = render_to_response(template_name,context,RequestContext(request))
+
+	#response = HttpResponse(string)
+	return response
+
+@login_required
+def edit_driver(request, pk):
+	string = pk
+	drv_id = int(pk)
+	form = NewDriverForm()
+	title = "Edit Driver"
+	context_message = title
+	
+	this_Driver = Driver.objects.get(pk =drv_id)
+	form.initial['Name'] = this_Driver.Name
+	
+	
+
+	template_name = "tracking/new_driver.html"
+	context = {'form':form, 'title':title, 'context_message':context_message}
+	response = render_to_response(template_name,context,RequestContext(request))
+	if request.method == 'POST':
+		form = NewDriverForm(request.POST, instance = this_Driver)
+		
+		
+		response = render_to_response(template_name,context,RequestContext(request))
+		if form.is_valid():
+			success_template = "tracking/tracking_main.html"
+			edf= form.save(False)
+			edf.id = drv_id
+			edf.Name = this_Driver.Name
+			edf.save()
+			response = render_to_response(template_name,RequestContext(request))
+		else:
+			#return HttpResponse("not Valid")
+			context = {'form':form, 'title':title, 'context_message':context_message}
+			response = render_to_response(template_name,context,RequestContext(request))
+
+	#response = HttpResponse(string)
+	return response
+
+
+@login_required
+def edit_installer(request, pk):
+	string = pk
+	drv_id = int(pk)
+	form = NewInstallerForm()
+	title = "Edit Installer"
+	context_message = title
+	
+	this_Installer = Installer.objects.get(pk =drv_id)
+	form.initial['Name'] = this_Installer.Name
+
+	template_name = "tracking/new_installer.html"
+	context = {'form':form, 'title':title, 'context_message':context_message}
+	response = render_to_response(template_name,context,RequestContext(request))
+	if request.method == 'POST':
+		form = NewInstallerForm(request.POST, instance = this_Installer)
+		
+		
+		response = render_to_response(template_name,context,RequestContext(request))
+		if form.is_valid():
+			success_template = "tracking/tracking_main.html"
+			edf= form.save(False)
+			edf.id = drv_id
+			edf.Name = this_Installer.Name
+			edf.save()
+			response = render_to_response(template_name,RequestContext(request))
+		else:
+			#return HttpResponse("not Valid")
+			context = {'form':form, 'title':title, 'context_message':context_message}
+			response = render_to_response(template_name,context,RequestContext(request))
+
+	#response = HttpResponse(string)
+	return response
+
