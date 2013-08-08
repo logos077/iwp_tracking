@@ -79,7 +79,7 @@ class Installer(models.Model):
 		return unicode(self.Name)
 
 class WorkOrder(models.Model):
-	Number 			= 		 models.IntegerField(max_length = 10, unique = True)
+	Number 			= 		 models.IntegerField(max_length = 10)
 	ProjectNumber	= 		 models.ForeignKey('Project')
 	Description		=		 models.CharField(max_length = 100)
 	Engineer 		=		 models.ForeignKey('Engineer')
@@ -108,8 +108,8 @@ class WorkOrder(models.Model):
 		else:
 			return "False"
 class Engineer(models.Model):
-	user	 = models.OneToOneField(User) #changed from foreign key user.
-	Initials =	models.CharField(max_length = 3)
+	user	 = models.OneToOneField(User) 
+	Initials =	models.CharField(max_length = 3, unique = True)
 	def __unicode__(self):
 		#Display = self.JobNumber+" - "+self.JobName 
 		return unicode(self.Initials)
@@ -120,10 +120,5 @@ class Driver(models.Model):
 		#Display = self.JobNumber+" - "+self.JobName 
 		return unicode(self.Name)
 
-admin.site.register(WorkOrder)
-admin.site.register(Engineer)
-admin.site.register(Installer)
-admin.site.register(Project)
-admin.site.register(Contractor)
-admin.site.register(Driver)
+
 

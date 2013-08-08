@@ -17,6 +17,7 @@ urlpatterns = patterns('tracking.views',
     (r'^new_contractor/$','new_contractor'),
     (r'^new_installer/$','new_installer'),
     (r'^projects/$','new_project'),
+    (r'^tracking_log/$','tracking_log'),
     (r'$','tracking'),
     
 

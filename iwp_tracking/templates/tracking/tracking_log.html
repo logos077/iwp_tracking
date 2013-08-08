@@ -1,0 +1,38 @@
+<!--tracking_log.html-->
+{% extends "base.html" %}
+{% block header%}
+Tracking Log
+{% endblock %}
+{% block content %}
+
+<div class = "content" style='text-align: center'>
+<div class='toolbar_top' >
+		<form  method="POST"> 
+	    
+        {% csrf_token %}
+
+		<label  for="id_job_user">Filter By:</label><select name="log_filter" id="log_filter"> 
+			<option value= '20'>Show 20 results per page</option>
+			<option value= '50'>Show 50 results per page</option>
+			<option value= '100'>Show 100 results per page</option>
+
+</select>
+
+
+       <input type="submit" value="Filter" /> </form>
+   </div>
+	<table align ="center" width = "auto" >
+
+		<tr class = "table_header">
+				<th>Time</th>
+				<th>User</th>
+				<th>Item Changed</th>
+				<th>Message</th>
+			</tr>
+{%for item in this_list%}
+<tr><td>{{item.action_time}}</td><td>{{item.user}}</td><td>{{item.object_repr}}</td><td>{{item.change_message}}</td></tr>
+{%endfor %}	
+</table>
+</div>
+
+{% endblock %}

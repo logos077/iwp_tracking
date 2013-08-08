@@ -10,12 +10,14 @@ urlpatterns = patterns('',
     (r'^password_reset/done/$', 'django.contrib.auth.views.password_reset_done'),
     (r'^reset/([0-9A-Za-z]+)-(.+)/$', 'django.contrib.auth.views.password_reset_confirm'),
     (r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete'),
+    url(r'access_denied', 'iwp_tracking.views.access_denied'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', 'iwp_tracking.views.logout_page'),
     url(r'^main/', 'iwp_tracking.views.main_page'),
     url(r'^tracking/', include('tracking.urls')),
     
+    #comment out for webfaction
     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
         'document_root': settings.MEDIA_ROOT}),
 

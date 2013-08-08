@@ -21,29 +21,32 @@
 			<div class="menu">
 				<a class="menu_item" href="/main/">Home</a>
 				<a class="menu_item" href ="/tracking/">Tracking</a>
-				<a class="menu_item" href="/tracking/projects/">New Job</a>
-				<a class="menu_item" href="/tracking/new_work_order/">New Work Order</a>
-				<a class="menu_item" href="/tracking/new_installer/">New Installer</a>
-				<a class="menu_item" href="/tracking/new_driver/">New Driver</a>
-				<a class="menu_item" href="/tracking/new_contractor/">New Contractor</a>
+				
 		      	
 				{%comment%}
 					The following code checks for group membership and displays the proper link
 				{%endcomment%}
 
-				{% for group in user.groups.all %}
-					{% if group.name == 'ProjectAdmin'%}
-				<a class="menu_item" href="/project_admin/project_admin_main/">Admin</a>
-					{% endif %}
-				{% endfor %}
-
-
-				{% for group in user.groups.all %}
-					{% if group.name == 'ProjectAdvisor'%}
-				<a class="menu_item" href="/project_admin/project_admin_main/">Project Advisor</a>
-					{% endif %}
-				{% endfor %}
 				
+
+
+				{% for group in user.groups.all %}
+					{% if group.name == 'Engineer' or  group.name == 'Admin'%}
+				<a class="menu_item" href="/tracking/projects/">New Job</a>
+				<a class="menu_item" href="/tracking/new_work_order/">New Work Order</a>
+				<a class="menu_item" href="/tracking/new_installer/">New Installer</a>
+				<a class="menu_item" href="/tracking/new_driver/">New Driver</a>
+				<a class="menu_item" href="/tracking/new_contractor/">New Contractor</a>
+				
+					{% endif %}
+				{% endfor %}
+
+				{% for group in user.groups.all %}
+					{% if group.name == 'Admin'%}
+				<a class="menu_item" href="/tracking/tracking_log/">Tracking Log</a>
+				<a class="menu_item" href="{% url admin:index %}">Admin</a>
+					{% endif %}
+				{% endfor %}
 				
 				{% block menu %}{% endblock %}
 				<a class="menu_item" id='logout' href="/logout/">Log Out</a>

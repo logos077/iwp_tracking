@@ -3,14 +3,26 @@ from django.contrib.auth import logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.contrib.auth.models import User
+from django.contrib.admin.models import LogEntry
 from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response, render
 from django.core.context_processors import csrf
 from django.template import RequestContext
 from tracking.models import *
 from tracking.forms import *
+
+def check_permissions(user):
+    var1 = user.groups.filter(name ='Admin').exists()
+    
+    var2 = user.groups.filter(name ='Engineer').exists()
+    if var1 or var2 ==True:
+        result = True
+    else:
+        result = False
+    return result
+
 
 @login_required
 def tracking(request):
@@ -76,7 +88,8 @@ def search(request):
 			response = render_to_response(template_name,context,RequestContext(request))
 
 	return response
-@login_required 
+@login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def new_project(request):
 	
 	form = NewProjectForm
@@ -98,6 +111,7 @@ def new_project(request):
 	
 	return response
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def new_work_order(request):
 	pk = request.user.id
 	en = Engineer.objects.get(user=pk)
@@ -123,6 +137,7 @@ def new_work_order(request):
 	
 	return response
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def edit_work_order(request, pk):
 	wo_id = int(pk)
 	#wo_number = int(pk)
@@ -183,6 +198,7 @@ def edit_work_order(request, pk):
 
 
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def new_driver(request):
 	form = NewDriverForm
 	drivers = Driver.objects.all()
@@ -205,6 +221,7 @@ def new_driver(request):
 	return response
 
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def new_installer(request):
 	form = NewInstallerForm
 	installers = Installer.objects.all()
@@ -230,6 +247,7 @@ def new_installer(request):
 
 
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def new_contractor(request):
 	form = NewContractorForm()
 	contractors = Contractor.objects.all()
@@ -270,7 +288,8 @@ def new_contractor(request):
 
 	return response
 
-@login_required	
+@login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def edit_con(request, pk):
 	string = pk
 	con_id = int(pk)
@@ -312,6 +331,7 @@ def edit_con(request, pk):
 	return response
 
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def edit_driver(request, pk):
 	string = pk
 	drv_id = int(pk)
@@ -349,6 +369,7 @@ def edit_driver(request, pk):
 
 
 @login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
 def edit_installer(request, pk):
 	string = pk
 	drv_id = int(pk)
@@ -382,3 +403,17 @@ def edit_installer(request, pk):
 	#response = HttpResponse(string)
 	return response
 
+@login_required
+@user_passes_test(check_permissions, login_url ="/main/access_denied/")
+def tracking_log(request):
+	title = "Tracking Log"
+	lst = []
+	this_list = lst[:20]
+	
+	template_name = "tracking/tracking_log.html"
+	context = {'this_list':this_list}
+	response = render_to_response(template_name,context,RequestContext(request))
+
+
+	#response = HttpResponse(string)
+	return response
