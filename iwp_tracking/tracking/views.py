@@ -56,7 +56,7 @@ def tracking(request):
 
 @login_required
 def search(request):
-
+	found_entries = None
 	query_string = ''
 	found_entry = None
 	search_exists = False
@@ -77,10 +77,10 @@ def search(request):
 			job_number = 0
 
 		
-		found_entry = Project.objects.filter(Number = job_number)
-	
+		found_entry = Project.objects.get(Number = job_number)
+		found_entries = Project.objects.filter(Number = job_number)
   		
-		if found_entry.exists():
+		if found_entries.exists():
 			this_list = WorkOrder.objects.filter(ProjectNumber = found_entry.id).order_by("ShipDate", "ProjectNumber")
 			context = {'this_list':this_list}
 			#return HttpResponse(found_entry.Number)
