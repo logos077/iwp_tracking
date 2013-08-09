@@ -1,5 +1,4 @@
-#wf_settings.py
-# Django settings for iwp_tracking project.
+# Django settings for J project.
 import sys
 from os.path import abspath, basename, dirname, join, normpath
 import django
@@ -18,12 +17,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
        'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'iwp_shipping_dev',                       # Or path to database file if using sqlite3.
-        'USER':  'iwp_admin',                      # Not used with sqlite3.
-        'PASSWORD': 'schatzi',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'IWP_Tracking',                       # Or path to database file if using sqlite3.
+        'USER':  'postgres',                      # Not used with sqlite3.
+        'PASSWORD': 'password',                  # Not used with sqlite3.
+        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
         }
 }
 # Local time zone for this installation. Choices can be found here:
@@ -50,8 +49,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/iwpadmin/webapps/media/'
-#normpath(join(DJANGO_ROOT, 'media'))
+MEDIA_ROOT = normpath(join(DJANGO_ROOT, 'media'))
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
@@ -61,17 +59,15 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/iwpadmin/webapps/static/'
-#normpath(join(DJANGO_ROOT, 'static'))
+STATIC_ROOT = normpath(join(DJANGO_ROOT, 'static'))
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-        '/home/iwpadmin/webapps/iwp_tracking/iwp_tracking/iwp_tracking/static/',
     #'/Users/logos/Dropbox/UW/TCSS445/Project/JobsProject/static',
-    #"static",
+    "static",
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -83,7 +79,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    '/home/iwpadmin/webapps/static/',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -102,21 +97,21 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
 ROOT_URLCONF = 'iwp_tracking.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'iwp_tracking.wsgi.application'
 
 TEMPLATE_DIRS = (
-        '/home/iwpadmin/webapps/iwp_tracking/iwp_tracking/iwp_tracking/templates/'
-    #    normpath(join(SITE_ROOT, 'templates')),
+        normpath(join(SITE_ROOT, 'templates')),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
-
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -128,7 +123,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    # 'django.contrib.admindocs',
     'tracking'
 )
 
@@ -160,4 +155,3 @@ LOGGING = {
         },
     }
 }
-

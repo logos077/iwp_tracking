@@ -56,8 +56,9 @@ def tracking(request):
 
 @login_required
 def search(request):
+
 	query_string = ''
-	found_entries = None
+	found_entry = None
 	search_exists = False
 	this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
 	context = {'this_list':this_list}
@@ -71,14 +72,17 @@ def search(request):
 			job_number = int(query_string)
 
 		except ValueError:
+			return HttpResponse("ValueError")
 			job_number = 0
 
-		found_entries = Project.objects.filter(Number = job_number)
 		
+		found_entry = Project.objects.get(Number = job_number)
+	
   		
-		if found_entries.exists():
-			this_list = WorkOrder.objects.filter(ProjectNumber = job_number).order_by("ShipDate", "ProjectNumber")
+		if found_entry:
+			this_list = WorkOrder.objects.filter(ProjectNumber = found_entry.id).order_by("ShipDate", "ProjectNumber")
 			context = {'this_list':this_list}
+			#return HttpResponse(found_entry.Number)
 			template_name = "tracking/tracking_main.html"
 			response = render_to_response(template_name,context,RequestContext(request))
 		
