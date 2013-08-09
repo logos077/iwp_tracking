@@ -60,6 +60,7 @@ def search(request):
 	query_string = ''
 	found_entry = None
 	search_exists = False
+	error_message = ""
 	this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
 	context = {'this_list':this_list}
 	template_name = "tracking/tracking_main.html"
@@ -72,14 +73,14 @@ def search(request):
 			job_number = int(query_string)
 
 		except ValueError:
-			return HttpResponse("ValueError")
+			error_message = " Value Error not a Number"#return HttpResponse("ValueError")
 			job_number = 0
 
 		
-		found_entry = Project.objects.get(Number = job_number)
+		found_entry = Project.objects.filter(Number = job_number)
 	
   		
-		if found_entry:
+		if found_entry.exists():
 			this_list = WorkOrder.objects.filter(ProjectNumber = found_entry.id).order_by("ShipDate", "ProjectNumber")
 			context = {'this_list':this_list}
 			#return HttpResponse(found_entry.Number)
@@ -88,7 +89,7 @@ def search(request):
 		
 		else:
 			message = "JOB NOT FOUND!"
-			context = {'this_list':this_list, "message":message}
+			context = {'this_list':this_list, "message":message, "error_message":error_message}
 			response = render_to_response(template_name,context,RequestContext(request))
 
 	return response
