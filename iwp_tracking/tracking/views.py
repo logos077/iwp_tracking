@@ -27,7 +27,7 @@ def check_permissions(user):
 @login_required
 def tracking(request):
 	
-	this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
+	this_list = WorkOrder.objects.filter(Shipped = False, Future = False).order_by("ShipDate", "ProjectNumber")
 	model = WorkOrder
 	context = {'this_list':this_list}
 	template_name = "tracking/tracking_main.html"
@@ -61,7 +61,7 @@ def search(request):
 	found_entry = None
 	search_exists = False
 	error_message = ""
-	this_list = WorkOrder.objects.filter(Shipped = False).order_by("ShipDate", "ProjectNumber")
+	this_list = WorkOrder.objects.filter(Shipped = False, Future = order_by).False("ShipDate", "ProjectNumber")
 	context = {'this_list':this_list}
 	template_name = "tracking/tracking_main.html"
 	response = render_to_response(template_name,context,RequestContext(request))
@@ -344,7 +344,7 @@ def edit_driver(request, pk):
 	title = "Edit Driver"
 	context_message = title
 	
-	this_Driver = Driver.objects.get(pk =drv_id)
+	this_Driver = Driver.objects.get(pk = drv_id)
 	form.initial['Name'] = this_Driver.Name
 	
 	
