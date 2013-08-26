@@ -30,6 +30,12 @@ DATABASES = {
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'America/Los_Angeles'
+DATETIME_INPUT_FORMATS = (
+    
+    '%m/%d/%Y',              # '10/25/2006'
+  
+    '%m/%d/%y',              # '10/25/06'
+)
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'

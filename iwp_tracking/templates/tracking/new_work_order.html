@@ -1,10 +1,24 @@
 <!--new_work_order.html-->
 
 {% extends "base.html" %}
+{% block head%}
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+  <script>
+$(function() {
+$( ".datePicker" ).datepicker();
+});
+  </script>
+  {% endblock %}
 {% block header%}
+
 New Work Order
 {% endblock %}
 {% block content %}
+
 
 <div class='content' > 
 	
@@ -14,7 +28,7 @@ New Work Order
 					
 						<table align ="float:left">
 							{{form.as_table}}
-						
+	
 						</table>
 					
 					
@@ -26,3 +40,4 @@ New Work Order
 </div>
 
 {% endblock %}
+
